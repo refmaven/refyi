@@ -120,13 +120,14 @@ header ul li {
     /* padding: 1.5rem; */
     padding: 0;
     width: fit-content;
-    width: calc(100% - 20rem);
+    width: calc(100% - 10rem);
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
     border-radius: 12px;
     box-sizing: border-box;
+    font-size: 1.125rem;
   }
 
   header {
