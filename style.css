@@ -13,16 +13,13 @@ body {
   align-items: center;
   overflow: hidden;
 }
-
-header,
-main,
-footer {
-  margin: 4px;
-}
-
 p {
   margin: 0;
   padding: 0;
+}
+
+header {
+  padding: 8px;
 }
 
 footer {
@@ -30,6 +27,7 @@ footer {
   justify-content: center;
   align-items: center;
 }
+
 h1,
 h2,
 h3,
@@ -80,9 +78,9 @@ li {
 
   width: fit-content;
   max-width: 300px;
-  padding: 0.3rem;
+  padding: 0.2rem 0.5rem;
 
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   border-radius: 8px;
 
   overflow-wrap: break-word;
@@ -115,20 +113,27 @@ header ul li {
 }
 
 /* phone layout */
-@media (max-width: 720px) {
+@media (max-width: 740px) {
   body {
-    display: block;
     min-height: 100vh;
-    margin: 8px 8px 4px 8px;
+    margin: auto;
+    /* padding: 1.5rem; */
+    padding: 0;
+    width: fit-content;
+    width: calc(100% - 20rem);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    border-radius: 12px;
+    box-sizing: border-box;
   }
 
   header {
     width: 100%;
-
     display: block;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
   }
 
   header ul {
