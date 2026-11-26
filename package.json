@@ -1,0 +1,13 @@
+{
+  "name": "refmaven-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "feeds": "node scripts/generate-feeds.mjs",
+    "check": "npm run build && python3 -c \"import xml.etree.ElementTree as ET; ET.parse('dist/rss.xml'); ET.parse('dist/atom.xml')\""
+  },
+  "devDependencies": {
+    "hjson": "^3.2.2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  name: refmaven
+  description: ""
+  introduction: ""
+  biography: {
+    short: ""
+    extended: ""
+    musical_description: ""
+    artist_statement: ""
+  }
+  contact: {
+    professional_email: ""
+    personal_note: ""
+  }
+  featured_release: ""
+}
