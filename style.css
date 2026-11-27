@@ -2,13 +2,13 @@
   color-scheme: light;
   --background: #fff;
   --foreground: #000;
-  font-family: sans-serif;
-  font-size: 16px;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: monospace;
   font-size: 1rem;
   font-style: normal;
 }
@@ -23,8 +23,8 @@ body {
   margin: 0 auto;
   background: var(--background);
   color: var(--foreground);
-  font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 a {
@@ -37,26 +37,9 @@ a:hover {
   text-decoration-thickness: 2px;
 }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible {
+a:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 3px;
-}
-
-.skip-link {
-  position: absolute;
-  z-index: 2;
-  top: 0.5rem;
-  left: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  transform: translateY(-160%);
-  background: var(--foreground);
-  color: var(--background);
-}
-
-.skip-link:focus {
-  transform: translateY(0);
 }
 
 .site-header {
@@ -64,267 +47,104 @@ input:focus-visible {
   border-bottom: 1px solid var(--foreground);
 }
 
-.site-header nav,
-.site-footer,
-.profile-links {
+.site-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.site-header > p {
+  margin: 0.15rem 0 0.65rem;
+}
+
+.site-header nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem 0.8rem;
 }
 
-.site-header nav a,
-.site-footer a {
+.site-header nav a {
   text-decoration: none;
+}
+
+.site-header nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 main {
   min-height: 0;
 }
 
-.profile {
-  padding: 1.1rem 0 0.9rem;
-}
-
-.profile h1 {
-  margin: 0 0 0.15rem;
-  font-size: 1.4rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-
-.profile-links {
-  gap: 0.25rem 0.7rem;
-}
-
-.home-section {
-  padding: 0.6rem 0 1rem;
-}
-
-.home-section h2 {
-  margin: 0 0 0.3rem;
-  font-weight: 700;
-}
-
 .post-list {
   display: grid;
+  padding-top: 0.75rem;
 }
 
-.post-row {
-  padding: 0.16rem 0;
-  display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
-  gap: 0.2rem 0.5rem;
+.post {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--foreground);
 }
 
-.post-row time {
-  font-variant-numeric: tabular-nums;
-}
-
-.site-footer {
-  padding: 0.55rem 0;
-  border-top: 1px solid var(--foreground);
-}
-
-.breadcrumbs {
-  padding-top: 0.45rem;
+.post > header {
+  margin-bottom: 0.25rem;
   display: flex;
-  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.65rem;
+}
+
+.post time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.post h2 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.post-images {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.45rem 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--foreground) var(--background);
+}
+
+.post-images:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+.post-images img {
+  flex: 0 0 auto;
+  width: min(82%, 500px);
+  max-height: 28rem;
+  object-fit: contain;
+  object-position: left center;
+  scroll-snap-align: start;
+}
+
+.post-text p {
+  margin: 0.45rem 0 0;
+  white-space: pre-wrap;
 }
 
 .page-heading {
   padding: 0.9rem 0 0.55rem;
 }
 
-.page-heading h1,
-.detail-page > h1 {
-  margin: 0.1rem 0 0;
-  font-size: 1.35rem;
+.page-heading h1 {
+  margin: 0;
   font-weight: 700;
-}
-
-.page-heading > p,
-.detail-topline,
-.archive-meta,
-.breadcrumbs,
-.quiet-note {
-  font-weight: 700;
-}
-
-.lede,
-.page-heading > .lede {
-  max-width: 100%;
-  margin: 0.3rem 0 0;
-}
-
-.archive-list {
-  display: grid;
-}
-
-.archive-item {
-  padding: 0.28rem 0 0.4rem;
-}
-
-.archive-meta,
-.detail-topline {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-
-.archive-item h3 {
-  margin: 0.08rem 0;
-  font-weight: 700;
-}
-
-.archive-item h3 a {
-  text-decoration: none;
-}
-
-.archive-item p {
-  margin: 0.15rem 0 0;
 }
 
 .empty-note {
   margin: 0.2rem 0;
-}
-
-.search-control {
-  width: min(100%, 22rem);
-  margin: 0 0 0.45rem;
-  display: grid;
-  gap: 0.15rem;
-}
-
-.search-control input {
-  width: 100%;
-  padding: 0.3rem 0;
-  border: 0;
-  border-bottom: 1px solid var(--foreground);
-  border-radius: 0;
-  background: var(--background);
-  color: var(--foreground);
-}
-
-.search-control input::placeholder {
-  color: var(--foreground);
-}
-
-[hidden] {
-  display: none !important;
-}
-
-.detail-page {
-  padding: 0.7rem 0 1.2rem;
-}
-
-.artwork-frame {
-  width: min(100%, 420px);
-  margin: 0.6rem 0;
-  aspect-ratio: 1;
-  background: var(--background);
-}
-
-.artwork-frame img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  filter: grayscale(1);
-}
-
-.prose {
-  max-width: 100%;
-}
-
-.prose p {
-  margin: 0 0 0.45rem;
-}
-
-.detail-section,
-.contact-block,
-.about-prose section {
-  margin-top: 0.8rem;
-}
-
-.detail-section h2,
-.contact-block h2,
-.about-prose h2 {
-  margin: 0 0 0.2rem;
-  font-weight: 700;
-}
-
-.detail-section p,
-.contact-block p {
-  margin: 0.2rem 0;
-}
-
-.track-list,
-.plain-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.track-list li {
-  padding: 0.1rem 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-
-.related-list {
-  display: grid;
-  gap: 0.15rem;
-}
-
-.related-list a {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-
-.publication-page > h1 {
-  margin-bottom: 0.35rem;
-}
-
-.publication-page .prose {
-  margin-top: 0.7rem;
-}
-
-.contact-block {
-  max-width: 100%;
-}
-
-.quiet-note {
-  margin-top: 0.5rem;
-}
-
-.directory-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.directory-list li {
-  padding: 0.3rem 0;
-}
-
-.directory-list li > a {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.directory-list p {
-  margin: 0.1rem 0 0;
-}
-
-@media (max-width: 420px) {
-  .post-row {
-    grid-template-columns: 5.8rem minmax(0, 1fr);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

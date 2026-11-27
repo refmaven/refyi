@@ -4,15 +4,17 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "content/**"
-      - "assets/**"
       - ".well-known/**"
-      - "scripts/**"
+      - "images/**"
       - ".github/workflows/static.yml"
+      - "index.html"
+      - "works/**"
+      - "posts.js"
+      - "site.js"
+      - "images/**"
+      - "scripts/generate-rss.js"
       - "style.css"
-      - "search.js"
-      - "package.json"
-      - "package-lock.json"
+      - ".nojekyll"
       - "CNAME"
   workflow_dispatch:
 
@@ -38,13 +40,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Build and validate site and feeds
-        run: npm run check
-        env:
-          BASE_PATH: /
+      - name: Generate RSS and prepare static site
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp index.html posts.js site.js style.css CNAME .nojekyll dist/
+          cp -R works .well-known dist/
+          if [ -d images ]; then cp -R images dist/images; fi
+          node scripts/generate-rss.js dist/rss.xml
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
