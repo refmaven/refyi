@@ -163,34 +163,31 @@ function pageShell({ title, description, route, body, data = null }) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${escapeHtml(description)}">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="${escapeHtml(url)}">
   <link rel="alternate" type="application/rss+xml" title="refmaven RSS" href="${link("rss.xml")}">
   <link rel="alternate" type="application/atom+xml" title="refmaven Atom" href="${link("atom.xml")}">
   <link rel="stylesheet" href="${link("style.css")}">
-  <script src="${link("theme.js")}" defer></script>
   <title>${escapeHtml(title)} — refmaven</title>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="wordmark" href="${link("")}" aria-label="refmaven home">refmaven<span class="wordmark-dot">.</span></a>
     <nav aria-label="Main navigation">
+      <a href="${link("")}">Home</a>
       <a href="${link("discography/")}">Music</a>
-      <a href="${link("posts/")}">Notes</a>
+      <a href="${link("posts/")}">Posts</a>
       <a href="${link("about/")}">About</a>
       <a href="${link("links/")}">Links</a>
-      <a href="${link("contact/")}">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" hidden>Light mode</button>
   </header>
   <main id="main">
 ${body}
   </main>
   <footer class="site-footer">
-    <a href="${link("")}">refmaven</a>
-    <span>Independent music, kept here.</span>
-    <div class="feed-links"><a href="${link("rss.xml")}">RSS</a><a href="${link("atom.xml")}">Atom</a></div>
+    <a href="${link("contact/")}">Contact</a>
+    <a href="${link("rss.xml")}">RSS</a>
+    <a href="${link("atom.xml")}">Atom</a>
   </footer>
 ${data ? `  <script type="application/json" id="archive-data">${safeJson(data)}</script>\n  <script src="${link("search.js")}" defer></script>\n` : ""}</body>
 </html>
@@ -202,7 +199,7 @@ function breadcrumb(label) {
 }
 
 function pageHeading(kicker, title, intro = "") {
-  return `<header class="page-heading"><p class="eyebrow">${escapeHtml(kicker)}</p><h1>${escapeHtml(title)}</h1>${intro ? `<p class="lede">${escapeHtml(intro)}</p>` : ""}</header>`;
+  return `<header class="page-heading">${kicker ? `<p class="eyebrow">${escapeHtml(kicker)}</p>` : ""}<h1>${escapeHtml(title)}</h1>${intro ? `<p class="lede">${escapeHtml(intro)}</p>` : ""}</header>`;
 }
 
 function placeholder(text) {
@@ -252,7 +249,7 @@ function releasePage(release, allReleases) {
 }
 
 function publicationPage(publication) {
-  const body = `${breadcrumb("Publications")}<article class="detail-page publication-page">
+  const body = `${breadcrumb("Posts")}<article class="detail-page publication-page">
     <div class="detail-topline"><span>${escapeHtml(publication.type)}</span><time datetime="${escapeHtml(publication.date)}">${escapeHtml(dateLabel(publication.date))}</time></div>
     <h1>${escapeHtml(publication.title)}</h1>
     <p class="lede">${escapeHtml(publication.summary)}</p>
@@ -290,7 +287,6 @@ await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 await copyFile(path.join(root, "style.css"), path.join(outputDir, "style.css"));
 await copyFile(path.join(root, "search.js"), path.join(outputDir, "search.js"));
-await copyFile(path.join(root, "theme.js"), path.join(outputDir, "theme.js"));
 await copyFile(path.join(root, "CNAME"), path.join(outputDir, "CNAME"));
 try {
   await cp(path.join(root, "assets"), path.join(outputDir, "assets"), { recursive: true });
@@ -301,19 +297,26 @@ await cp(path.join(root, ".well-known"), path.join(outputDir, ".well-known"), { 
 
 const releases = [...releaseData.releases].sort((a, b) => b.release_date.localeCompare(a.release_date));
 const publications = [...publicationData.publications].sort((a, b) => b.date.localeCompare(a.date));
-const featured = releases.find((release) => release.slug === site.featured_release);
-
-const homeBody = `<section class="hero">
-  <p class="eyebrow">Independent music / refmaven</p>
+const email = site.contact.professional_email;
+const homePosts = publications.length
+  ? `<div class="post-list">${publications.map((publication) => `<article class="post-row">
+      <time datetime="${escapeHtml(publication.date)}">${escapeHtml(publication.date)}</time>
+      <a href="${link(`posts/${publication.slug}/`)}">${escapeHtml(publication.title)}</a>
+    </article>`).join("\n")}</div>`
+  : placeholder("No posts yet.");
+const homeBody = `<section class="profile">
   <h1>${escapeHtml(site.name)}</h1>
-  ${site.introduction ? `<p class="hero-intro">${escapeHtml(site.introduction)}</p>` : placeholder("Artist introduction — to be written and approved by the artist.")}
-  <a class="text-link" href="${link("discography/")}">Explore the discography <span aria-hidden="true">↗</span></a>
+  <div class="profile-links">
+    <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>
+    <a href="${link("rss.xml")}">RSS</a>
+    <a href="${link("atom.xml")}">Atom</a>
+  </div>
 </section>
-${featured ? `<section class="home-section featured-section"><div class="section-title"><p class="eyebrow">Featured release</p><a href="${link("discography/")}">All music <span aria-hidden="true">↗</span></a></div>${releaseCard(featured)}</section>` : ""}
-<section class="home-section"><div class="section-title"><p class="eyebrow">Selected discography</p><a href="${link("discography/")}">Browse all <span aria-hidden="true">↗</span></a></div>${listMarkup(releases.slice(0, 3), "Releases will be listed here when they are ready to publish.", (release) => releaseCard(release, true))}</section>
-<section class="home-section"><div class="section-title"><p class="eyebrow">Notes & announcements</p><a href="${link("posts/")}">Publication archive <span aria-hidden="true">↗</span></a></div>${listMarkup(publications.slice(0, 3), "No recent publications. This archive remains available whenever there is something worth keeping.", publicationCard)}</section>
-<section class="home-bottom"><p>Find the music elsewhere, or get in touch.</p><div><a href="${link("links/")}">Official links</a><a href="${link("contact/")}">Contact</a></div></section>`;
-await writePage("", pageShell({ title: "Independent music", description: "The official home and archive of refmaven.", route: "", body: homeBody }));
+<section class="home-section posts-section">
+  <h2>Posts</h2>
+  ${homePosts}
+</section>`;
+await writePage("", pageShell({ title: "Home", description: `Posts and contact information for ${site.name}.`, route: "", body: homeBody }));
 
 const bio = site.biography;
 const aboutBody = `${breadcrumb("About")}${pageHeading("About", "A little context")}
@@ -332,13 +335,12 @@ ${listMarkup(releases, "No releases have been published here yet.", (release) =>
 await writePage("discography", pageShell({ title: "Discography", description: "The complete release archive of refmaven.", route: "discography/", body: discographyBody, data: releases.map(({ title, type, release_date }) => ({ title, type, year: release_date.slice(0, 4) })) }));
 for (const release of releases) await writePage(`discography/${release.slug}`, releasePage(release, releases));
 
-const publicationSearch = `<label class="search-control">Search publications<input type="search" data-archive-search="publications" placeholder="Title, type, date" autocomplete="off"></label>`;
-const postsBody = `${breadcrumb("Publications")}${pageHeading("Archive / 02", "Notes & announcements", "A quiet chronological archive of things worth keeping.")}${publicationSearch}
-${listMarkup(publications, "No publications yet. Updates will live here when there is something to share.", (publication) => `<div data-search-item>${publicationCard(publication)}</div>`)}`;
-await writePage("posts", pageShell({ title: "Publications", description: "Announcements, release notes, and occasional updates from refmaven.", route: "posts/", body: postsBody, data: publications.map(({ title, type, date }) => ({ title, type, date })) }));
+const publicationSearch = `<label class="search-control">Search posts<input type="search" data-archive-search="posts" placeholder="Title, type, date" autocomplete="off"></label>`;
+const postsBody = `${breadcrumb("Posts")}${pageHeading("", "Posts")}${publicationSearch}
+${listMarkup(publications, "No posts yet.", (publication) => `<div data-search-item>${publicationCard(publication)}</div>`)}`;
+await writePage("posts", pageShell({ title: "Posts", description: `Posts from ${site.name}.`, route: "posts/", body: postsBody, data: publications.map(({ title, type, date }) => ({ title, type, date })) }));
 for (const publication of publications) await writePage(`posts/${publication.slug}`, publicationPage(publication));
 
-const email = site.contact.professional_email;
 const contactBody = `${breadcrumb("Contact")}${pageHeading("Contact", "Get in touch", "For professional inquiries related to music and the project.")}
 <section class="contact-block"><h2>Professional inquiries</h2>${email ? `<p><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>` : placeholder("Official email address — add to content/site.hjson when ready.")}</section>
 <section class="contact-block"><h2>Personal correspondence</h2>${site.contact.personal_note ? `<p>${escapeHtml(site.contact.personal_note)}</p>` : placeholder("This site is not a personal messaging channel.")}</section>

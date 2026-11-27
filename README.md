@@ -117,6 +117,6 @@ The generated site uses directory index routes, for example `/discography/exampl
 
 ## Appearance, privacy, and accessibility
 
-The design uses the system sans-serif font at one consistent text size and only black (`#000`) and white (`#fff`). Weight, alignment, spacing, and rules distinguish headings and sections. Dark mode is the default; the visible theme switch changes to light mode and remembers that choice locally in the browser. Without JavaScript, the site remains dark and fully navigable.
+The site uses a dense, left-aligned black-on-white layout with a content width capped at 650px. The homepage is a minimal profile with the contact email and RSS/Atom feeds above a newest-first list of posts. There is no theme switch or light-mode setting.
 
 The site has no visitor analytics or engagement metrics. Search filters only the already-loaded archive in the current page; it sends no data. Navigation works without JavaScript, search is an enhancement, keyboard focus is visible, images use alt text, and reduced-motion preferences are respected.
