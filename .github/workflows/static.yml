@@ -12,14 +12,16 @@ on:
       - "posts.js"
       - "site.js"
       - "images/**"
+      - "scripts/get-commit-date.js"
       - "scripts/generate-rss.js"
+      - "scripts/stamp-post-dates.js"
       - "style.css"
       - ".nojekyll"
       - "CNAME"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -44,10 +46,19 @@ jobs:
         run: |
           rm -rf dist
           mkdir -p dist
-          cp index.html posts.js site.js style.css CNAME .nojekyll dist/
+          node scripts/stamp-post-dates.js
+          cp posts.js dist/posts.js
+          node scripts/generate-rss.js dist/rss.xml
+          if ! git diff --quiet -- posts.js; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add posts.js
+            git commit -m "Assign publication dates to new posts"
+            git push
+          fi
+          cp index.html site.js style.css CNAME .nojekyll dist/
           cp -R works .well-known dist/
           if [ -d images ]; then cp -R images dist/images; fi
-          node scripts/generate-rss.js dist/rss.xml
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

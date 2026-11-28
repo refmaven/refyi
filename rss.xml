@@ -4,15 +4,21 @@
     <title>refmaven — posts</title>
     <link>https://xn--om2b.fyi/</link>
     <description>Posts from refmaven.</description>
-    <lastBuildDate>Sat, 28 Nov 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 28 Nov 2026 16:28:06 GMT</lastBuildDate>
     <item>
       <title>Example post</title>
-      <link>https://xn--om2b.fyi/#example-post</link>
-      <guid isPermaLink="true">https://xn--om2b.fyi/#example-post</guid>
-      <pubDate>Sat, 28 Nov 2026 00:00:00 GMT</pubDate>
-      <description>This is a demo post. Replace it with your own post object in posts.js.</description>
+      <link>https://xn--om2b.fyi/#2026-11-28-example-post</link>
+      <guid isPermaLink="true">https://xn--om2b.fyi/#2026-11-28-example-post</guid>
+      <pubDate>Sat, 28 Nov 2026 16:28:06 GMT</pubDate>
+      <description>This is a demo post. Replace it with your own post object in posts.js. The first part of this post is visible immediately, while the rest is tucked behind the See more control. This makes it easier to browse a stream of posts without hiding the full text.
+
+Long posts can still use paragraphs, just like shorter ones. When you expand this post, you’ll see the rest of this paragraph along with one more paragraph below. The See less control collapses the extra text again, and the post’s date and title link to its own address in the format #2026-11-28-example-post.
+
+Try replacing this sample with a longer note of your own. Posts with more than 600 characters show the preview and expand control automatically; shorter posts stay fully visible. The same date-title address is used by the post heading and its RSS feed entry.</description>
       <content:encoded>&lt;p&gt;&lt;img src=&quot;https://xn--om2b.fyi/images/example-post.svg&quot; alt=&quot;An abstract black-and-white example image&quot;&gt;&lt;/p&gt;
-&lt;p&gt;This is a demo post. Replace it with your own post object in posts.js.&lt;/p&gt;</content:encoded>
+&lt;p&gt;This is a demo post. Replace it with your own post object in posts.js. The first part of this post is visible immediately, while the rest is tucked behind the See more control. This makes it easier to browse a stream of posts without hiding the full text.&lt;/p&gt;
+&lt;p&gt;Long posts can still use paragraphs, just like shorter ones. When you expand this post, you’ll see the rest of this paragraph along with one more paragraph below. The See less control collapses the extra text again, and the post’s date and title link to its own address in the format #2026-11-28-example-post.&lt;/p&gt;
+&lt;p&gt;Try replacing this sample with a longer note of your own. Posts with more than 600 characters show the preview and expand control automatically; shorter posts stay fully visible. The same date-title address is used by the post heading and its RSS feed entry.&lt;/p&gt;</content:encoded>
     </item>
   </channel>
 </rss>

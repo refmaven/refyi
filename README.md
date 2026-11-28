@@ -14,14 +14,12 @@ Open <http://localhost:8000>.
 
 ## Write posts
 
-Each post is an object in `posts.js`. A working example post is already included; replace it with your own or add more objects to the array. A date and at least one of `text` or `images` are required. The title and slug are optional; if omitted, the page has no title and the feed uses the post date as its title. Posts are shown newest first.
+Each post is an object in `posts.js`. A working example post is already included; replace it with your own or add more objects to the array. At least one of `text` or `images` is required. The title is optional; if omitted, the page uses "Post" as its title. Posts are shown newest first and each has a link in the format `#date-title`.
 
 ```js
 const posts = [
   {
-    date: "2026-11-28",
     title: "An optional title",
-    slug: "optional-stable-id",
     images: [
       { src: "/images/photo-one.jpg", alt: "Description of the first image" },
       { src: "/images/photo-two.jpg", alt: "Description of the second image" }
@@ -41,7 +39,9 @@ if (typeof module !== "undefined" && module.exports) {
 }
 ```
 
-Put image files under `images/` and use a site-root path beginning with `/images/`, or use a direct HTTPS image URL such as `https://i.imgur.com/example.jpg`. Each image needs an `alt` description. Image strips scroll horizontally. The `slug` is used as the post's homepage anchor; if omitted, one is generated from the date and position in the file.
+The Pages workflow assigns the commit's authored local calendar date to posts without a `date` field, then commits that generated date to `posts.js` so it stays stable on later builds. Git records the commit author's timezone offset, so the resulting date follows the timezone used when that commit was created. Existing explicit dates are preserved. For a local browser preview before the workflow runs, undated posts use today's date in the browser's timezone. Locally generated RSS uses the latest commit's authored date for undated posts.
+
+Put image files under `images/` and use a site-root path beginning with `/images/`, or use a direct HTTPS image URL such as `https://i.imgur.com/example.jpg`. Each image needs an `alt` description. Image strips scroll horizontally. Posts with more than 600 characters of text show a faded, height-limited preview with a "See more" control.
 
 ## RSS feed
 
@@ -51,7 +51,7 @@ Put image files under `images/` and use a site-root path beginning with `/images
 node scripts/generate-rss.js
 ```
 
-This writes `rss.xml` in the repository root. You can pass another output path, for example `node scripts/generate-rss.js dist/rss.xml`. The GitHub Pages workflow generates the feed as part of deployment.
+This writes `rss.xml` in the repository root. You can pass another output path, for example `node scripts/generate-rss.js dist/rss.xml`. The feed includes full post text and images, not the page's collapsed preview. Its item `pubDate` and channel `lastBuildDate` are both set to the generation time, including seconds. The GitHub Pages workflow generates the feed as part of deployment.
 
 ## Site files
 

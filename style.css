@@ -105,6 +105,10 @@ main {
   font-weight: 700;
 }
 
+.post h2 time {
+  font-weight: 400;
+}
+
 .post-images {
   display: flex;
   gap: 0.5rem;
@@ -132,6 +136,45 @@ main {
 .post-text p {
   margin: 0.45rem 0 0;
   white-space: pre-wrap;
+}
+
+.post-text-collapsed {
+  position: relative;
+  max-height: 8em;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.post-text-collapsed::after {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1.5em;
+  background: linear-gradient(transparent, var(--background));
+  content: "";
+  pointer-events: none;
+}
+
+.post-expander {
+  margin-top: 0.45rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.post-expander:hover {
+  text-decoration-thickness: 2px;
+}
+
+.post-expander:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
 }
 
 .page-heading {

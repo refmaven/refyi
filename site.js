@@ -1,8 +1,21 @@
 const postList = document.querySelector("[data-post-list]");
 
 if (postList) {
-  function postSlug(post, index) {
-    return post.slug || `post-${post.date}-${index + 1}`;
+  const postPreviewLength = 600;
+
+  function localDate() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  }
+
+  function postAnchorId(post) {
+    const titleSlug = (post.title?.trim() || "post")
+      .normalize("NFKD")
+      .toLowerCase()
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "post";
+    return `${post.date}-${titleSlug}`;
   }
 
   function isAllowedImageSource(source) {
@@ -27,7 +40,12 @@ if (postList) {
       throw new TypeError("posts.js must define an array.");
     }
 
-    const slugs = new Set();
+    const fallbackDate = localDate();
+    posts = posts.map((post) => (
+      post && post.date === undefined ? { ...post, date: fallbackDate } : post
+    ));
+
+    const anchorIds = new Set();
     posts.forEach((post, index) => {
       const date = typeof post?.date === "string" ? new Date(`${post.date}T00:00:00Z`) : null;
       if (!post
@@ -36,7 +54,6 @@ if (postList) {
           || !date
           || Number.isNaN(date.getTime())
           || date.toISOString().slice(0, 10) !== post.date
-          || (post.slug !== undefined && (typeof post.slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug)))
           || (post.title !== undefined && typeof post.title !== "string")
           || (post.text !== undefined && typeof post.text !== "string")
           || (post.images !== undefined && !Array.isArray(post.images))
@@ -44,42 +61,49 @@ if (postList) {
         throw new TypeError(`Invalid post record at index ${index}.`);
       }
 
-      const slug = postSlug(post, index);
-      if (slugs.has(slug)) {
-        throw new TypeError(`Duplicate post slug "${slug}".`);
+      const anchorId = postAnchorId(post);
+      if (anchorIds.has(anchorId)) {
+        throw new TypeError(`Duplicate post anchor "${anchorId}".`);
       }
-      slugs.add(slug);
+      anchorIds.add(anchorId);
 
       for (const image of post.images || []) {
         if (!image
             || typeof image.src !== "string"
             || !isAllowedImageSource(image.src)
             || typeof image.alt !== "string") {
-          throw new TypeError(`Invalid image in post "${slug}".`);
+          throw new TypeError(`Invalid image in post "${anchorId}".`);
         }
       }
     });
 
-    return posts.map((post, index) => ({ ...post, slug: postSlug(post, index) }))
+    return posts.map((post) => ({ ...post, id: postAnchorId(post) }))
       .sort((a, b) => b.date.localeCompare(a.date));
+  }
+
+  function appendParagraphs(container, text) {
+    for (const paragraph of text.split(/\n{2,}/)) {
+      const p = document.createElement("p");
+      p.textContent = paragraph;
+      container.append(p);
+    }
   }
 
   function renderPost(post) {
     const article = document.createElement("article");
     article.className = "post";
-    article.id = post.slug;
+    article.id = post.id;
 
     const header = document.createElement("header");
-    if (post.title?.trim()) {
-      const title = document.createElement("h2");
-      title.textContent = post.title;
-      header.append(title);
-    }
-
+    const title = document.createElement("h2");
+    const permalink = document.createElement("a");
+    permalink.href = `#${post.id}`;
     const date = document.createElement("time");
     date.dateTime = post.date;
-    date.textContent = post.date.replaceAll("-", "/");
-    header.append(date);
+    date.textContent = post.date;
+    permalink.append(date, ` ${post.title?.trim() || "Post"}`);
+    title.append(permalink);
+    header.append(title);
     article.append(header);
 
     if (post.images?.length) {
@@ -99,14 +123,28 @@ if (postList) {
     }
 
     if (post.text?.trim()) {
+      const postText = post.text.trim();
       const text = document.createElement("div");
       text.className = "post-text";
-      for (const paragraph of post.text.trim().split(/\n{2,}/)) {
-        const p = document.createElement("p");
-        p.textContent = paragraph;
-        text.append(p);
+      appendParagraphs(text, postText);
+
+      if (postText.length > postPreviewLength) {
+        text.classList.add("post-text-collapsed");
+        const toggle = document.createElement("button");
+        toggle.className = "post-expander";
+        toggle.type = "button";
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.textContent = "See more";
+        toggle.addEventListener("click", () => {
+          const expanded = toggle.getAttribute("aria-expanded") !== "true";
+          toggle.setAttribute("aria-expanded", String(expanded));
+          toggle.textContent = expanded ? "See less" : "See more";
+          text.classList.toggle("post-text-collapsed", !expanded);
+        });
+        article.append(text, toggle);
+      } else {
+        article.append(text);
       }
-      article.append(text);
     }
 
     return article;
